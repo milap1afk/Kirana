@@ -1,17 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300" role="img" aria-label="Spoken 4.5 min versus typed 14.5 min across 2 prompts" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300" role="img" aria-label="Spoken 7.2 min versus typed 20.8 min across 3 prompts" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
 <rect x="0.5" y="0.5" width="899" height="299" rx="16" fill="#1a1a19" stroke="#383835"/>
 <text x="32" y="40" font-size="15" font-weight="600" fill="#ffffff">Spoken vs typed minutes per prompt</text>
 <rect x="668" y="30" width="10" height="10" rx="2" fill="#3987e5"/>
 <text x="684" y="39" font-size="12" fill="#c3c2b7">Spoken</text>
 <rect x="748" y="30" width="10" height="10" rx="2" fill="#d95926"/>
 <text x="764" y="39" font-size="12" fill="#c3c2b7">Typed at 40 wpm</text>
-<text x="32" y="84" font-size="26" font-weight="700" fill="#ffffff">4.5 min</text>
+<text x="32" y="84" font-size="26" font-weight="700" fill="#ffffff">7.2 min</text>
 <text x="32" y="104" font-size="12" fill="#c3c2b7">spoken</text>
-<text x="192" y="84" font-size="26" font-weight="700" fill="#ffffff">14.5 min</text>
+<text x="192" y="84" font-size="26" font-weight="700" fill="#ffffff">20.8 min</text>
 <text x="192" y="104" font-size="12" fill="#c3c2b7">typed</text>
-<text x="352" y="84" font-size="26" font-weight="700" fill="#ffffff">10.0 min</text>
+<text x="352" y="84" font-size="26" font-weight="700" fill="#ffffff">13.6 min</text>
 <text x="352" y="104" font-size="12" fill="#c3c2b7">saved by voice</text>
-<text x="512" y="84" font-size="26" font-weight="700" fill="#ffffff">2</text>
+<text x="512" y="84" font-size="26" font-weight="700" fill="#ffffff">3</text>
 <text x="512" y="104" font-size="12" fill="#c3c2b7">prompts</text>
 <line x1="64" x2="868" y1="258.0" y2="258.0" stroke="#383835"/>
 <text x="56" y="262.0" font-size="11" text-anchor="end" fill="#c3c2b7">0 min</text>
@@ -21,10 +21,13 @@
 <text x="56" y="175.3" font-size="11" text-anchor="end" fill="#c3c2b7">10 min</text>
 <line x1="64" x2="868" y1="128.0" y2="128.0" stroke="#383835"/>
 <text x="56" y="132.0" font-size="11" text-anchor="end" fill="#c3c2b7">15 min</text>
-<path class="bar" d="M236.0,258.0V246.1Q236.0,242.1 240.0,242.1H260.0Q264.0,242.1 264.0,246.1V258.0Z" fill="#3987e5"><title>#0 spoken: 110s</title></path>
-<path class="bar" d="M266.0,258.0V223.3Q266.0,219.3 270.0,219.3H290.0Q294.0,219.3 294.0,223.3V258.0Z" fill="#d95926"><title>#0 typed: 268s</title></path>
-<text x="265.0" y="276" font-size="11" text-anchor="middle" fill="#c3c2b7">#0</text>
-<path class="bar" d="M638.0,258.0V238.9Q638.0,234.9 642.0,234.9H662.0Q666.0,234.9 666.0,238.9V258.0Z" fill="#3987e5"><title>#1 spoken: 160s</title></path>
-<path class="bar" d="M668.0,258.0V175.0Q668.0,171.0 672.0,171.0H692.0Q696.0,171.0 696.0,175.0V258.0Z" fill="#d95926"><title>#1 typed: 602s</title></path>
-<text x="667.0" y="276" font-size="11" text-anchor="middle" fill="#c3c2b7">#1</text>
+<path class="bar" d="M169.0,258.0V246.1Q169.0,242.1 173.0,242.1H193.0Q197.0,242.1 197.0,246.1V258.0Z" fill="#3987e5"><title>#0 spoken: 110s</title></path>
+<path class="bar" d="M199.0,258.0V223.3Q199.0,219.3 203.0,219.3H223.0Q227.0,219.3 227.0,223.3V258.0Z" fill="#d95926"><title>#0 typed: 268s</title></path>
+<text x="198.0" y="276" font-size="11" text-anchor="middle" fill="#c3c2b7">#0</text>
+<path class="bar" d="M437.0,258.0V230.4Q437.0,226.4 441.0,226.4H461.0Q465.0,226.4 465.0,230.4V258.0Z" fill="#3987e5"><title>#1 spoken: 219s</title></path>
+<path class="bar" d="M467.0,258.0V175.0Q467.0,171.0 471.0,171.0H491.0Q495.0,171.0 495.0,175.0V258.0Z" fill="#d95926"><title>#1 typed: 602s</title></path>
+<text x="466.0" y="276" font-size="11" text-anchor="middle" fill="#c3c2b7">#1</text>
+<path class="bar" d="M705.0,258.0V247.6Q705.0,243.6 709.0,243.6H729.0Q733.0,243.6 733.0,247.6V258.0Z" fill="#3987e5"><title>#2 spoken: 100s</title></path>
+<path class="bar" d="M735.0,258.0V207.8Q735.0,203.8 739.0,203.8H759.0Q763.0,203.8 763.0,207.8V258.0Z" fill="#d95926"><title>#2 typed: 375s</title></path>
+<text x="734.0" y="276" font-size="11" text-anchor="middle" fill="#c3c2b7">#2</text>
 </svg>

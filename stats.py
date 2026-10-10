@@ -16,7 +16,7 @@ TYPE_WPM, SPEAK_WPM = 40, 150
 START, END = "<!-- stats:start -->", "<!-- stats:end -->"
 
 SECRETS = [re.compile(p) for p in (
-    r"sk-[\w-]{16,}", r"gh[pousr]_\w{20,}", r"github_pat_\w{20,}", r"AKIA[0-9A-Z]{16}",
+    r"sk-[\w-]{16,}", r"gsk_\w{20,}", r"gh[pousr]_\w{20,}", r"github_pat_\w{20,}", r"AKIA[0-9A-Z]{16}",
     r"AIza[\w-]{30,}", r"xox[abprs]-[\w-]{10,}", r"eyJ[\w-]+\.[\w-]+\.[\w-]+",
 )]
 NAMED = re.compile(r"(?i)\b([\w-]*(?:key|token|secret|password))(\s*[=:]\s*)(?=\S*\d)\S{12,}")

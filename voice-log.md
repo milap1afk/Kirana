@@ -12,7 +12,7 @@ words 179 · spoken 110s · typed 268s
 > don't ask any questions like this. Just do it as told.
 
 ## 1 · 2026-10-10 14:44 +0530
-words 401 · spoken ~160s · typed 602s
+words 401 · spoken 219s · typed 602s
 
 > merge the two logged prompts into one. That's prompt 0. It took 110 seconds. This is prompt 1. I've set the Git user for this repo to Milap Kothari. Redo the commits so far with that author.
 > Now, what we have built, Kirana, is a voice khata for Indian corner shops. The shopkeeper says the days in English, and Kirana keeps the ledger and writes the WhatsApp reminder tagline: बोलो लिखा गया.
@@ -43,3 +43,17 @@ words 401 · spoken ~160s · typed 602s
 > - Today's 5 view
 > - Phone polish, hardening, and README
 > Build steps 1 and 2 now, fully with tests. Run the phase for real against Grok with 5 messy English notes, and show me the entries committed after each step. Now that's prompt 1. Go ahead and build it
+
+## 2 · 2026-10-10 15:00 +0530
+words 250 · spoken ~100s · typed 375s
+
+> prompt 1 took 219 seconds. The Grok key is in env.now.
+> 1. Run the real phase on the 5 messy English notes. Show me the entries, and if the 2,00,000 or 5,00,000 come out wrong, fix the prompt until they are right.
+> 2. Capture those real replies as the test features.
+> 3. Build steps 3, 4, and 5 together.
+> 4. The copy: "Reminder and WhatsApp button on each balance. Text: Ramesh ji, ₹200 baki hain. WhatsApp opens.me with it."
+> 5. आज का हिसाब: 3 titles for today's udhar payment and sale total, then today's entries. Older ones under a sub-entry toggle. Phone polish: 360 px wide, no sideways scroll, 44 px tap target, Noto Sans manifest, and icon for Add to Home Screen. Looks good on a screen recording.
+> 6. The 45429 retry with the 8-second Ruko countdown. The Load Sample Day button when the ledger is empty and a judge face. Open the page yourself on a phone with headless Chrome or Safari, or screenshot it. Fix anything ugly.
+> 7. The Redmi tagline hero screenshot under the chart.
+> 8. Try it in 2 minutes.
+> 9. How this was built with the honest line that mouse and enter were used only for approvals, prompt, commit, and test counts. The Wispr Flow account was made through the Hacker House Goa referral link. The link to the voice log: confirm no keys in the repo. Run all tests, commit after each step, push, and that's the prompt to go ahead and build.

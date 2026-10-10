@@ -8,7 +8,7 @@ LOG = "# Voice log\n\n" + stats.entry(0, "one two three four", "2026-10-10 14:21
 
 class RedactTest(unittest.TestCase):
     def test_known_key_shapes(self):
-        for key in ("sk-ant-abc123def456ghi789", "ghp_" + "a1" * 18, "AKIAABCDEFGHIJKLMNOP"):
+        for key in ("sk-ant-abc123def456ghi789", "ghp_" + "a1" * 18, "AKIAABCDEFGHIJKLMNOP", "gsk_" + "b2" * 20):
             self.assertEqual(stats.redact(f"use {key} now"), "use [REDACTED] now")
 
     def test_named_value(self):
