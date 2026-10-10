@@ -14,7 +14,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 ROOT = Path(__file__).parent
-DB_PATH, ENV_PATH = ROOT / "kirana.db", ROOT / ".env"
+DB_PATH, ENV_PATH, SAMPLES_PATH = ROOT / "kirana.db", ROOT / ".env", ROOT / "samples.json"
 URL, MODEL = "https://api.groq.com/openai/v1/chat/completions", "openai/gpt-oss-120b"
 TYPES = ("udhar", "payment", "sale")
 HONORIFICS = {"shri", "shree", "sri", "mr", "mrs", "smt", "ji", "jee", "g", "bhai", "by", "bhaiya", "sahab", "saheb"}
@@ -34,7 +34,9 @@ Reply with JSON only: {"entries": [{"customer": "Ramesh", "amount": 200, "type":
 - amount is whole rupees as a number. Hindi number words must work: sau=100, hazaar=1000,
   dedh=1.5x, dhai=2.5x, sawa=1.25x, saadhe=+half, paune=-quarter. paanch sau=500,
   dhai sau=250, dedh hazaar=1500, sawa hazaar=1250, saadhe teen sau=350, paune do sau=175.
-- customer is the person's name as spoken. Use "" for a cash sale with no name.
+- customer is the person's name as spoken. An udhar or payment with no name belongs to the
+  person named just before it in the same note. Use "" only for a cash sale with no name.
+- If the speaker corrects themselves (nahi nahi, matlab), keep only the corrected amount.
 - If the note has no entry, reply {"entries": []}."""
 
 SAMPLE_NOTES = [
@@ -85,7 +87,8 @@ def clean_entries(raw):
     return entries
 
 
-def parse_note(note):
+def ask(note):
+    """Send one note to the model and return its raw JSON reply text."""
     key = api_key()
     if not key:
         raise AIError("key")
@@ -96,8 +99,7 @@ def parse_note(note):
     headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json", "User-Agent": "kirana"}
     try:
         with fetch(urllib.request.Request(URL, json.dumps(body).encode(), headers), timeout=30) as reply:
-            content = json.load(reply)["choices"][0]["message"]["content"]
-        return clean_entries(json.loads(content)["entries"])
+            return json.load(reply)["choices"][0]["message"]["content"]
     except urllib.error.HTTPError as error:
         if error.code == 429:
             raise AIError("cap", error.headers.get("retry-after"))
@@ -106,6 +108,17 @@ def parse_note(note):
         raise AIError("offline")
     except (ValueError, KeyError, TypeError, IndexError):
         raise AIError("confused")
+
+
+def read_reply(content):
+    try:
+        return clean_entries(json.loads(content)["entries"])
+    except (ValueError, KeyError, TypeError):
+        raise AIError("confused")
+
+
+def parse_note(note):
+    return read_reply(ask(note))
 
 
 # --- ledger ----------------------------------------------------------------
@@ -189,13 +202,17 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def demo():
+    """Parse the sample notes with the real model, print the entries, record the replies."""
+    replies = {}
     for note in SAMPLE_NOTES:
         print(f"\n{note}")
         try:
-            for e in parse_note(note):
-                print(f"  {e['customer']:<10} ₹{e['amount']:<6} {e['type']}")
+            replies[note] = ask(note)
+            for e in read_reply(replies[note]):
+                print(f"  {e['customer']:<12} ₹{e['amount']:<6} {e['type']}")
         except AIError as error:
             print(f"  ! {MESSAGES[error.code]}")
+    SAMPLES_PATH.write_text(json.dumps(replies, ensure_ascii=False, indent=1) + "\n")
 
 
 if __name__ == "__main__":

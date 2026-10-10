@@ -1,0 +1,7 @@
+{
+ "ramesh bhai ko dhai sau ka udhar diya, aur suresh ji ne paanch sau jama kiye": "{\"entries\":[{\"customer\":\"Ramesh\",\"amount\":250,\"type\":\"udhar\"},{\"customer\":\"Suresh\",\"amount\":500,\"type\":\"payment\"}]}",
+ "shri ramesh ji phir aaye the, 200 ka saman udhar le gaye": "{\"entries\":[{\"customer\":\"Ramesh\",\"amount\":200,\"type\":\"udhar\"}]}",
+ "aaj dedh hazaar ki nakad bikri hui, haan aur geeta didi ne sawa hazaar ka udhar liya": "{\"entries\":[{\"customer\":\"\",\"amount\":1500,\"type\":\"sale\"},{\"customer\":\"geeta didi\",\"amount\":1250,\"type\":\"udhar\"}]}",
+ "umm imran bhai ne teen sau chukaye... nahi nahi saadhe teen sau, aur 80 ka doodh udhar": "{\"entries\":[{\"customer\":\"imran bhai\",\"amount\":350,\"type\":\"payment\"},{\"customer\":\"imran bhai\",\"amount\":80,\"type\":\"udhar\"}]}",
+ "sunita ji ko barah sau ka ration udhaar, cash mein 2 hazaar ki bikri, ramesh by ne 100 wapas diye": "{\"entries\":[{\"customer\":\"sunita\",\"amount\":1200,\"type\":\"udhar\"},{\"customer\":\"\",\"amount\":2000,\"type\":\"sale\"},{\"customer\":\"ramesh\",\"amount\":100,\"type\":\"payment\"}]}"
+}

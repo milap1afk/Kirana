@@ -10,15 +10,9 @@ from unittest import mock
 
 import server
 
-# Model replies in the shape Groq returns them, so the tests need no key.
-RECORDED = {
-    "ramesh bhai ko dhai sau ka udhar diya, aur suresh ji ne paanch sau jama kiye":
-        '{"entries":[{"customer":"Ramesh bhai","amount":250,"type":"udhar"},'
-        '{"customer":"Suresh ji","amount":500,"type":"payment"}]}',
-    "aaj dedh hazaar ki nakad bikri hui, haan aur geeta didi ne sawa hazaar ka udhar liya":
-        '{"entries":[{"customer":"","amount":1500,"type":"sale"},'
-        '{"customer":"Geeta didi","amount":1250,"type":"udhar"}]}',
-}
+# Real replies captured from Groq by `python3 server.py demo`, so the tests need no key.
+RECORDED = json.loads(server.SAMPLES_PATH.read_text())
+DHAI_SAU, DEDH_HAZAAR = server.SAMPLE_NOTES[0], server.SAMPLE_NOTES[2]
 
 
 def recorded(request, timeout=None):
@@ -44,12 +38,16 @@ class ParseTest(unittest.TestCase):
         self.assertEqual(server.clean_name("Bhai"), "Bhai")
 
     def test_recorded_notes_become_entries(self):
+        entry = lambda customer, amount, kind: {"customer": customer, "amount": amount, "type": kind}
         with mock.patch.object(server, "fetch", recorded):
-            notes = [server.parse_note(note) for note in RECORDED]
-        self.assertEqual(notes[0], [{"customer": "Ramesh", "amount": 250, "type": "udhar"},
-                                    {"customer": "Suresh", "amount": 500, "type": "payment"}])
-        self.assertEqual(notes[1], [{"customer": "Nakad", "amount": 1500, "type": "sale"},
-                                    {"customer": "Geeta Didi", "amount": 1250, "type": "udhar"}])
+            notes = [server.parse_note(note) for note in server.SAMPLE_NOTES]
+        self.assertEqual(notes, [
+            [entry("Ramesh", 250, "udhar"), entry("Suresh", 500, "payment")],
+            [entry("Ramesh", 200, "udhar")],
+            [entry("Nakad", 1500, "sale"), entry("Geeta Didi", 1250, "udhar")],
+            [entry("Imran", 350, "payment"), entry("Imran", 80, "udhar")],
+            [entry("Sunita", 1200, "udhar"), entry("Nakad", 2000, "sale"), entry("Ramesh", 100, "payment")],
+        ])
 
     def test_request_uses_model_temperature_zero_and_json(self):
         seen = {}
@@ -58,7 +56,7 @@ class ParseTest(unittest.TestCase):
             seen.update(json.loads(request.data), auth=request.get_header("Authorization"))
             return recorded(request)
         with mock.patch.object(server, "fetch", spy):
-            server.parse_note(next(iter(RECORDED)))
+            server.parse_note(DHAI_SAU)
         self.assertEqual((seen["model"], seen["temperature"], seen["response_format"], seen["auth"]),
                          ("openai/gpt-oss-120b", 0, {"type": "json_object"}, "Bearer test-key"))
 
@@ -140,7 +138,7 @@ class HttpTest(unittest.TestCase):
 
     def test_nothing_is_saved_before_confirm_and_undo_removes(self):
         with mock.patch.object(server, "api_key", lambda: "k"), mock.patch.object(server, "fetch", recorded):
-            status, body = self.call("/api/parse", {"note": next(iter(RECORDED))})
+            status, body = self.call("/api/parse", {"note": DHAI_SAU})
         entries = json.loads(body)["entries"]
         self.assertEqual((status, len(entries), self.count()), (200, 2, 0))
         ids = json.loads(self.call("/api/confirm", {"entries": entries[:1]})[1])["ids"]
