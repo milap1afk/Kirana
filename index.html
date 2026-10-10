@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kirana — बोलो, लिखा गया</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans:wght@400;600;700&display=swap">
+<style>
+  :root { --bg: #f6f4ee; --card: #fff; --ink: #1c1b18; --muted: #6b6960; --line: #dedbd0; --go: #17794c; --stop: #b3261e; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 "Noto Sans", "Noto Sans Devanagari", sans-serif; }
+  main { max-width: 480px; margin: 0 auto; padding: 16px; }
+  h1 { margin: 0; font-size: 26px; }
+  h2 { margin: 28px 0 8px; font-size: 18px; }
+  .tag, .sub, #status { color: var(--muted); }
+  .tag { margin: 0 0 16px; }
+  textarea { width: 100%; min-height: 110px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; font: inherit; }
+  button { min-height: 44px; padding: 8px 16px; border: 0; border-radius: 12px; font: inherit; font-weight: 600; color: #fff; background: var(--ink); }
+  button:disabled { opacity: .5; }
+  #go { width: 100%; margin-top: 8px; min-height: 52px; font-size: 18px; }
+  #status { min-height: 24px; margin: 8px 0; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 12px; overflow-wrap: anywhere; }
+  .card b { font-size: 20px; }
+  .sub { margin: 2px 0 12px; font-size: 14px; }
+  .row { display: flex; gap: 8px; }
+  .row button { flex: 1; min-height: 56px; font-size: 18px; }
+  .yes { background: var(--go); } .no { background: var(--stop); }
+  .saved { border-color: var(--go); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Kirana</h1>
+  <p class="tag">बोलो, लिखा गया.</p>
+  <textarea id="note" placeholder="Yahan bolo: Ramesh bhai ko dhai sau ka udhar…"></textarea>
+  <button id="go">लिखो</button>
+  <p id="status" role="status"></p>
+  <section id="cards"></section>
+</main>
+<script>
+const HINDI = { udhar: "उधार", payment: "जमा", sale: "बिक्री" };
+const PLAIN = {
+  udhar: e => `${e.customer} ne ₹${e.amount} ka udhaar liya`,
+  payment: e => `${e.customer} ne ₹${e.amount} jama kiye`,
+  sale: e => `${e.customer} ko ₹${e.amount} ki bikri`,
+};
+const $ = id => document.getElementById(id);
+const el = (tag, cls, text) => Object.assign(document.createElement(tag), { className: cls || "", textContent: text || "" });
+
+async function post(path, body) {
+  try {
+    const reply = await fetch(path, { method: "POST", body: JSON.stringify(body) });
+    return await reply.json();
+  } catch {
+    return { error: "offline", message: "Internet nahi chal raha. Net check karke dobara try karo." };
+  }
+}
+
+function card(entry) {
+  const box = el("div", "card");
+  const ask = () => {
+    const yes = el("button", "yes", "✓ सही है"), no = el("button", "no", "✕ रद्द");
+    yes.onclick = async () => {
+      yes.disabled = no.disabled = true;
+      const reply = await post("/api/confirm", { entries: [entry] });
+      if (reply.ids) saved(reply.ids); else { $("status").textContent = reply.message || "Save nahi hua. Dobara try karo."; ask(); }
+    };
+    no.onclick = () => box.remove();
+    draw("", `${entry.customer} ₹${entry.amount} ${HINDI[entry.type]} — सही है?`, [yes, no]);
+  };
+  const saved = ids => {
+    const back = el("button", "", "↩ वापस लो");
+    back.onclick = async () => { back.disabled = true; await post("/api/undo", { ids }); ask(); };
+    draw("saved", `✓ लिखा गया: ${entry.customer} ₹${entry.amount} ${HINDI[entry.type]}`, [back]);
+  };
+  const draw = (state, title, buttons) => {
+    const row = el("div", "row");
+    row.append(...buttons);
+    box.className = `card ${state}`;
+    box.replaceChildren(el("b", "", title), el("p", "sub", PLAIN[entry.type](entry)), row);
+  };
+  ask();
+  return box;
+}
+
+$("go").onclick = async () => {
+  const note = $("note").value.trim();
+  if (!note) return;
+  $("go").disabled = true;
+  $("status").textContent = "Likh raha hoon…";
+  const reply = await post("/api/parse", { note });
+  $("go").disabled = false;
+  $("status").textContent = reply.entries ? "" : reply.message || "Kuch gadbad hui. Dobara try karo.";
+  if (!reply.entries) return;
+  $("cards").prepend(...reply.entries.map(card));
+  $("note").value = "";
+};
+</script>
+</body>
+</html>
