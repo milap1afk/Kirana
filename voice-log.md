@@ -45,7 +45,7 @@ words 401 · spoken 219s · typed 602s
 > Build steps 1 and 2 now, fully with tests. Run the phase for real against Grok with 5 messy English notes, and show me the entries committed after each step. Now that's prompt 1. Go ahead and build it
 
 ## 2 · 2026-10-10 15:00 +0530
-words 250 · spoken ~100s · typed 375s
+words 250 · spoken 130s · typed 375s
 
 > prompt 1 took 219 seconds. The Grok key is in env.now.
 > 1. Run the real phase on the 5 messy English notes. Show me the entries, and if the 2,00,000 or 5,00,000 come out wrong, fix the prompt until they are right.
@@ -57,3 +57,8 @@ words 250 · spoken ~100s · typed 375s
 > 7. The Redmi tagline hero screenshot under the chart.
 > 8. Try it in 2 minutes.
 > 9. How this was built with the honest line that mouse and enter were used only for approvals, prompt, commit, and test counts. The Wispr Flow account was made through the Hacker House Goa referral link. The link to the voice log: confirm no keys in the repo. Run all tests, commit after each step, push, and that's the prompt to go ahead and build.
+
+## 3 · 2026-10-10 15:26 +0530
+words 189 · spoken ~76s · typed 284s
+
+> Prompt took 130 seconds. Final pass first exercise. What you haven't in the headless Chrome at phone width. Click phase on a real note. Confirm undo copy reminder and the WhatsApp button. And four fake a four twenty nine to see the countdown. Fix anything that breaks. Second review the whole repo like a judge who has five minutes. Readme page final button. Make sure no internet wrong key daily cap. and AI confused each show one plain English line and never a trace book. Third, add a read me section called notes for the Wispr team with five real functions points from dictating into Claude code taken from missers in the voice-log. Like English and Hinglish, judge me, just pass for just pass and the number words plus one or two things that would have helped. Like a dictionary of repo words: 40 in how this was built. Like the referral as https://ref.wisprflow.ai/hhg, and say the Wispr Flow history matches the voice-log prompt for prompt. Update all counts. Confirm no key anywhere in history. Run all tests. Commit push, and that's prompt 3. Go ahead and build it.

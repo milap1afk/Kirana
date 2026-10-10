@@ -69,6 +69,15 @@ class ParseTest(unittest.TestCase):
             self.assertEqual(caught.exception.code, code)
             self.assertIn(code, server.MESSAGES)
 
+    def test_timeouts_and_dropped_connections_are_offline_or_confused(self):
+        import http.client
+        import socket
+        for error, code in ((socket.timeout("slow"), "offline"), (ConnectionResetError(), "offline"),
+                            (http.client.RemoteDisconnected("gone"), "offline"), (http.client.IncompleteRead(b""), "confused")):
+            with mock.patch.object(server, "fetch", failing(error)), self.assertRaises(server.AIError) as caught:
+                server.parse_note("x")
+            self.assertEqual(caught.exception.code, code)
+
     def test_429_wait_seconds(self):
         for headers, seconds in (({"retry-after": "7.2"}, 7), ({}, 8), ({"retry-after": "soon"}, 8)):
             with mock.patch.object(server, "fetch", failing(http_error(429, headers))), self.assertRaises(server.AIError) as caught:
@@ -191,6 +200,19 @@ class HttpTest(unittest.TestCase):
         for part in ("wa.me/?text=", "जी, ${rs(d.balance)} बाकी हैं।", "second रुको", "min-height: 44px", "Noto+Sans",
                      'rel="manifest"', "width=device-width", "आज का हिसाब", "सब entries", "Sample day"):
             self.assertIn(part, page)
+
+    def test_unexpected_errors_give_one_plain_line_not_a_traceback(self):
+        plain = {"error": "oops", "message": server.MESSAGES["oops"]}
+        with mock.patch.object(server, "parse_note", side_effect=RuntimeError("boom")):
+            self.assertEqual(json.loads(self.call("/api/parse", {"note": "x"})[1]), plain)
+        with mock.patch.object(server, "save", side_effect=server.sqlite3.OperationalError("disk full")):
+            status, body = self.call("/api/confirm", {"entries": [{"customer": "A", "amount": 5, "type": "udhar"}]})
+        self.assertEqual((status, json.loads(body)), (500, plain))
+        with mock.patch.object(server, "state", side_effect=RuntimeError("boom")):
+            self.assertEqual(json.loads(self.call("/api/state")[1]), plain)
+        for message in server.MESSAGES.values():
+            self.assertNotIn("\n", message)
+            self.assertNotIn("Traceback", message)
 
     def test_bad_confirm_is_rejected(self):
         self.assertEqual(self.call("/api/confirm", {"entries": [{"customer": "A", "amount": -5, "type": "udhar"}]})[0], 400)

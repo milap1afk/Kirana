@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Kirana: voice khata for corner shops. Standard library only.
 
-python3 server.py        serve the page on http://localhost:8000
+python3 server.py [port] serve the page on http://localhost:8000
 python3 server.py demo   parse the sample notes with the real model and print the entries
 """
 import functools
+import http.client
 import json
 import re
 import sqlite3
@@ -28,6 +29,7 @@ MESSAGES = {
     "wait": "AI abhi busy hai. Thodi der mein dobara try karo.",
     "cap": "Aaj ki AI limit poori ho gayi. Thodi der baad try karo.",
     "confused": "AI samajh nahi paya. Note thoda saaf bolkar dobara try karo.",
+    "oops": "Kuch gadbad hui. Dobara try karo.",
 }
 
 PROMPT = """You turn an Indian shopkeeper's spoken Hinglish note into ledger entries.
@@ -112,9 +114,9 @@ def ask(note):
                 seconds = 8
             raise AIError("wait", seconds) if seconds <= 60 else AIError("cap")
         raise AIError("key" if error.code in (401, 403) else "confused")
-    except (urllib.error.URLError, TimeoutError):
+    except OSError:  # no network, DNS failure, timeout, dropped connection
         raise AIError("offline")
-    except (ValueError, KeyError, TypeError, IndexError):
+    except (ValueError, KeyError, TypeError, IndexError, http.client.HTTPException):
         raise AIError("confused")
 
 
@@ -225,15 +227,21 @@ class Handler(BaseHTTPRequestHandler):
         if self.path in ("/icon-192.png", "/icon-512.png"):
             return self.send(200, icon(int(self.path[6:9])), "image/png")
         if self.path == "/api/state":
-            db = connect(self.db_path)
             try:
-                return self.send(200, state(db))
-            finally:
-                db.close()
+                db = connect(self.db_path)
+                try:
+                    return self.send(200, state(db))
+                finally:
+                    db.close()
+            except Exception:
+                return self.send(500, {"error": "oops", "message": MESSAGES["oops"]})
         self.send(404, {"error": "not found"})
 
     def do_POST(self):
-        db = connect(self.db_path)
+        try:
+            db = connect(self.db_path)
+        except Exception:
+            return self.send(500, {"error": "oops", "message": MESSAGES["oops"]})
         try:
             data = json.loads(self.rfile.read(int(self.headers.get("Content-Length") or 0)) or b"{}")
             if self.path == "/api/parse":
@@ -254,7 +262,9 @@ class Handler(BaseHTTPRequestHandler):
         except AIError as error:
             self.send(502, {"error": error.code, "message": MESSAGES[error.code], "retry_after": error.retry_after})
         except (ValueError, TypeError, AttributeError):
-            self.send(400, {"error": "bad request"})
+            self.send(400, {"error": "bad request", "message": MESSAGES["oops"]})
+        except Exception:  # never show the shopkeeper a traceback
+            self.send(500, {"error": "oops", "message": MESSAGES["oops"]})
         finally:
             db.close()
 
@@ -280,5 +290,13 @@ if __name__ == "__main__":
     if sys.argv[1:] == ["demo"]:
         demo()
     else:
-        print("Kirana: http://localhost:8000")
-        ThreadingHTTPServer(("", 8000), Handler).serve_forever()
+        port = int(sys.argv[1]) if sys.argv[1:] and sys.argv[1].isdigit() else 8000
+        try:
+            web = ThreadingHTTPServer(("", port), Handler)
+        except OSError:
+            sys.exit(f"Port {port} is busy. Try another one: python3 server.py {port + 1}")
+        print(f"Kirana: http://localhost:{port}")
+        try:
+            web.serve_forever()
+        except KeyboardInterrupt:
+            print("\nKirana stopped.")

@@ -1,17 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300" role="img" aria-label="Spoken 7.2 min versus typed 20.8 min across 3 prompts" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300" role="img" aria-label="Spoken 8.9 min versus typed 25.5 min across 4 prompts" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
 <rect x="0.5" y="0.5" width="899" height="299" rx="16" fill="#1a1a19" stroke="#383835"/>
 <text x="32" y="40" font-size="15" font-weight="600" fill="#ffffff">Spoken vs typed minutes per prompt</text>
 <rect x="668" y="30" width="10" height="10" rx="2" fill="#3987e5"/>
 <text x="684" y="39" font-size="12" fill="#c3c2b7">Spoken</text>
 <rect x="748" y="30" width="10" height="10" rx="2" fill="#d95926"/>
 <text x="764" y="39" font-size="12" fill="#c3c2b7">Typed at 40 wpm</text>
-<text x="32" y="84" font-size="26" font-weight="700" fill="#ffffff">7.2 min</text>
+<text x="32" y="84" font-size="26" font-weight="700" fill="#ffffff">8.9 min</text>
 <text x="32" y="104" font-size="12" fill="#c3c2b7">spoken</text>
-<text x="192" y="84" font-size="26" font-weight="700" fill="#ffffff">20.8 min</text>
+<text x="192" y="84" font-size="26" font-weight="700" fill="#ffffff">25.5 min</text>
 <text x="192" y="104" font-size="12" fill="#c3c2b7">typed</text>
-<text x="352" y="84" font-size="26" font-weight="700" fill="#ffffff">13.6 min</text>
+<text x="352" y="84" font-size="26" font-weight="700" fill="#ffffff">16.6 min</text>
 <text x="352" y="104" font-size="12" fill="#c3c2b7">saved by voice</text>
-<text x="512" y="84" font-size="26" font-weight="700" fill="#ffffff">3</text>
+<text x="512" y="84" font-size="26" font-weight="700" fill="#ffffff">4</text>
 <text x="512" y="104" font-size="12" fill="#c3c2b7">prompts</text>
 <line x1="64" x2="868" y1="258.0" y2="258.0" stroke="#383835"/>
 <text x="56" y="262.0" font-size="11" text-anchor="end" fill="#c3c2b7">0 min</text>
@@ -21,13 +21,16 @@
 <text x="56" y="175.3" font-size="11" text-anchor="end" fill="#c3c2b7">10 min</text>
 <line x1="64" x2="868" y1="128.0" y2="128.0" stroke="#383835"/>
 <text x="56" y="132.0" font-size="11" text-anchor="end" fill="#c3c2b7">15 min</text>
-<path class="bar" d="M169.0,258.0V246.1Q169.0,242.1 173.0,242.1H193.0Q197.0,242.1 197.0,246.1V258.0Z" fill="#3987e5"><title>#0 spoken: 110s</title></path>
-<path class="bar" d="M199.0,258.0V223.3Q199.0,219.3 203.0,219.3H223.0Q227.0,219.3 227.0,223.3V258.0Z" fill="#d95926"><title>#0 typed: 268s</title></path>
-<text x="198.0" y="276" font-size="11" text-anchor="middle" fill="#c3c2b7">#0</text>
-<path class="bar" d="M437.0,258.0V230.4Q437.0,226.4 441.0,226.4H461.0Q465.0,226.4 465.0,230.4V258.0Z" fill="#3987e5"><title>#1 spoken: 219s</title></path>
-<path class="bar" d="M467.0,258.0V175.0Q467.0,171.0 471.0,171.0H491.0Q495.0,171.0 495.0,175.0V258.0Z" fill="#d95926"><title>#1 typed: 602s</title></path>
-<text x="466.0" y="276" font-size="11" text-anchor="middle" fill="#c3c2b7">#1</text>
-<path class="bar" d="M705.0,258.0V247.6Q705.0,243.6 709.0,243.6H729.0Q733.0,243.6 733.0,247.6V258.0Z" fill="#3987e5"><title>#2 spoken: 100s</title></path>
-<path class="bar" d="M735.0,258.0V207.8Q735.0,203.8 739.0,203.8H759.0Q763.0,203.8 763.0,207.8V258.0Z" fill="#d95926"><title>#2 typed: 375s</title></path>
-<text x="734.0" y="276" font-size="11" text-anchor="middle" fill="#c3c2b7">#2</text>
+<path class="bar" d="M135.5,258.0V246.1Q135.5,242.1 139.5,242.1H159.5Q163.5,242.1 163.5,246.1V258.0Z" fill="#3987e5"><title>#0 spoken: 110s</title></path>
+<path class="bar" d="M165.5,258.0V223.3Q165.5,219.3 169.5,219.3H189.5Q193.5,219.3 193.5,223.3V258.0Z" fill="#d95926"><title>#0 typed: 268s</title></path>
+<text x="164.5" y="276" font-size="11" text-anchor="middle" fill="#c3c2b7">#0</text>
+<path class="bar" d="M336.5,258.0V230.4Q336.5,226.4 340.5,226.4H360.5Q364.5,226.4 364.5,230.4V258.0Z" fill="#3987e5"><title>#1 spoken: 219s</title></path>
+<path class="bar" d="M366.5,258.0V175.0Q366.5,171.0 370.5,171.0H390.5Q394.5,171.0 394.5,175.0V258.0Z" fill="#d95926"><title>#1 typed: 602s</title></path>
+<text x="365.5" y="276" font-size="11" text-anchor="middle" fill="#c3c2b7">#1</text>
+<path class="bar" d="M537.5,258.0V243.2Q537.5,239.2 541.5,239.2H561.5Q565.5,239.2 565.5,243.2V258.0Z" fill="#3987e5"><title>#2 spoken: 130s</title></path>
+<path class="bar" d="M567.5,258.0V207.8Q567.5,203.8 571.5,203.8H591.5Q595.5,203.8 595.5,207.8V258.0Z" fill="#d95926"><title>#2 typed: 375s</title></path>
+<text x="566.5" y="276" font-size="11" text-anchor="middle" fill="#c3c2b7">#2</text>
+<path class="bar" d="M738.5,258.0V251.0Q738.5,247.0 742.5,247.0H762.5Q766.5,247.0 766.5,251.0V258.0Z" fill="#3987e5"><title>#3 spoken: 76s</title></path>
+<path class="bar" d="M768.5,258.0V221.0Q768.5,217.0 772.5,217.0H792.5Q796.5,217.0 796.5,221.0V258.0Z" fill="#d95926"><title>#3 typed: 284s</title></path>
+<text x="767.5" y="276" font-size="11" text-anchor="middle" fill="#c3c2b7">#3</text>
 </svg>
