@@ -8,43 +8,59 @@
 | 2 | 2026-10-10 15:00 +0530 | 250 | ~1:40 | 6:15 | 4:35 |
 <!-- stats:end -->
 
-# Kirana
+# Kirana — बोलो, लिखा गया.
 
-**बोलो, लिखा गया.** A voice khata for Indian corner shops. The shopkeeper dictates
-the day's notes in Hinglish; Kirana turns each note into ledger entries, shows a
-confirm card for each one, and keeps who owes how much.
+<img src="hero.png" width="320" alt="Kirana on a phone: today's totals and who owes how much, with reminder and WhatsApp buttons">
 
-Built so far: the note parser with confirm cards, save and undo (step 1) and
-balances (step 2). Still to come: WhatsApp reminders, today's view, phone polish.
+A voice khata for Indian corner shops. The shopkeeper dictates the day's notes in
+Hinglish. Kirana turns each note into ledger entries, asks "सही है?" on a card for
+each one, keeps who owes how much, and writes the WhatsApp reminder.
 
-The project is built by voice. Every prompt is logged word for word in
-[voice-log.md](voice-log.md), and the chart above compares how long each prompt
-took to say with how long it would have taken to type at 40 words a minute.
+- **Speak, then confirm.** "ramesh bhai ko dhai sau ka udhar" becomes "Ramesh ₹250 उधार — सही है?". Nothing is saved before confirm, and every saved card has an undo.
+- **Hindi number words work.** dhai sau 250, dedh hazaar 1500, sawa hazaar 1250, saadhe teen sau 350.
+- **Honorifics are trimmed.** Ramesh bhai, Ramesh ji and Shri Ramesh ji are all Ramesh.
+- **कौन कितना बाकी.** Udhar minus payments per customer, with a copy-reminder button and a WhatsApp button ("Ramesh जी, ₹350 बाकी हैं।").
+- **आज का हिसाब.** Three tiles for today's udhar, payments and sales, then today's entries; older ones sit under "सब entries".
+- **Phone first.** 360 px wide, 44 px tap targets, Noto Sans, and a manifest and icon for Add to Home Screen.
+- **Plain failure messages** for no internet, wrong key, daily cap and a confused AI. A busy AI (429) shows an "8 second रुको…" countdown and retries.
+
+## Try it in 2 minutes
+
+```sh
+git clone https://github.com/milap1afk/Kirana && cd Kirana
+python3 server.py                         # open http://localhost:8000
+```
+
+Press **Sample day लोड करो** to fill the empty ledger with five recorded notes;
+that needs no key. To parse your own notes, get a free key from
+[console.groq.com](https://console.groq.com) and put it in `.env`:
+
+```sh
+echo 'GROQ_API_KEY=your-key' > .env       # gitignored, never committed
+python3 server.py demo                    # parse the 5 sample notes with the real model
+```
+
+It needs only Python 3.9 or newer; there is nothing to install.
+
+## How this was built
+
+Kirana was built by voice. The mouse and the Enter key were used only for approvals.
+
+- 3 voice prompts, 10 commits, 25 tests.
+- Every prompt is in [voice-log.md](voice-log.md), word for word, with its word count and timings. The chart at the top compares the minutes spoken with the minutes it would have taken to type at 40 words a minute.
+- The prompts were dictated with Wispr Flow. The Wispr Flow account was made through the Hacker House Goa referral link.
+- The model is `openai/gpt-oss-120b` on Groq, at temperature 0 with JSON output. The tests run on real replies recorded in [samples.json](samples.json), so they need no key.
+- There are no keys in this repo: `.env` is gitignored, and the voice log redacts anything shaped like a key.
 
 ## Layout
 
 | File | What it does |
 |---|---|
+| [server.py](server.py) | The server: Groq parser, SQLite ledger, balances, today's view, manifest and icon |
+| [index.html](index.html) | The page |
+| [samples.json](samples.json) | Real Groq replies: the test fixtures and the sample day |
+| [test_server.py](test_server.py), [test_stats.py](test_stats.py) | Tests: `python3 -m unittest` |
+| [stats.py](stats.py) | Logs prompts; regenerates `chart.svg` and the table at the top |
+| [.githooks/pre-commit](.githooks/pre-commit) | Runs the tests and `stats.py` on every commit (`git config core.hooksPath .githooks`) |
 | [CLAUDE.md](CLAUDE.md) | The working rules |
-| [voice-log.md](voice-log.md) | Every prompt, with timestamp, word count and timings |
-| [server.py](server.py) | The server: Groq parser, SQLite ledger, balances |
-| [index.html](index.html) | The page: note box, confirm cards, कौन कितना बाकी |
-| [test_server.py](test_server.py) | Server tests on recorded model replies; no key needed |
-| [stats.py](stats.py) | Logs prompts; regenerates `chart.svg` and the table above |
-| [test_stats.py](test_stats.py) | Stats tests |
-| [.githooks/pre-commit](.githooks/pre-commit) | Runs the tests and `stats.py` on every commit |
-
-## Use
-
-```sh
-git config core.hooksPath .githooks       # once per clone
-echo 'GROQ_API_KEY=...' > .env            # your Groq key; never committed
-python3 server.py                         # open http://localhost:8000
-python3 server.py demo                    # parse 5 sample notes with the real model
-python3 -m unittest                       # run the tests
-python3 stats.py log 45 < prompt.txt      # log a prompt that took 45 s to say
-python3 stats.py                          # regenerate the chart and table
-```
-
-Spoken times marked `~` are estimates at 150 words a minute, used when the real
-duration isn't given. Keys in prompts are replaced with `[REDACTED]`.
+| [voice-log.md](voice-log.md) | Every prompt |
