@@ -129,6 +129,13 @@ def undo(db, ids):
         db.executemany("DELETE FROM entries WHERE id = ?", [(int(i),) for i in ids])
 
 
+def balances(db):
+    """Who owes how much: udhar minus payments per customer. Sales are excluded."""
+    rows = db.execute("""SELECT customer, SUM(CASE type WHEN 'udhar' THEN amount ELSE -amount END) AS due
+        FROM entries WHERE type IN ('udhar', 'payment') GROUP BY customer HAVING due > 0 ORDER BY due DESC, customer""")
+    return [{"customer": customer, "balance": due} for customer, due in rows]
+
+
 # --- http ------------------------------------------------------------------
 
 class Handler(BaseHTTPRequestHandler):
@@ -145,6 +152,12 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/":
             return self.send(200, (ROOT / "index.html").read_bytes(), "text/html")
+        if self.path == "/api/balances":
+            db = connect(self.db_path)
+            try:
+                return self.send(200, {"balances": balances(db)})
+            finally:
+                db.close()
         self.send(404, {"error": "not found"})
 
     def do_POST(self):

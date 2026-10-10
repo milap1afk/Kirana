@@ -99,6 +99,18 @@ class LedgerTest(unittest.TestCase):
         server.undo(self.db, ids[:1])
         self.assertEqual(self.rows(), [("Suresh", 50, "payment")])
 
+    def test_balance_is_udhar_minus_payments_without_sales(self):
+        entry = lambda customer, amount, kind: {"customer": customer, "amount": amount, "type": kind}
+        ids = server.save(self.db, [
+            entry("Ramesh", 250, "udhar"), entry("Ramesh", 200, "udhar"), entry("Ramesh", 100, "payment"),
+            entry("Ramesh", 900, "sale"), entry("Geeta", 1250, "udhar"),
+            entry("Suresh", 500, "udhar"), entry("Suresh", 500, "payment"), entry("Nakad", 1500, "sale"),
+        ])
+        self.assertEqual(server.balances(self.db), [{"customer": "Geeta", "balance": 1250},
+                                                    {"customer": "Ramesh", "balance": 350}])
+        server.undo(self.db, ids[2:3])
+        self.assertEqual(server.balances(self.db)[1], {"customer": "Ramesh", "balance": 450})
+
 
 class HttpTest(unittest.TestCase):
     def setUp(self):
@@ -133,8 +145,10 @@ class HttpTest(unittest.TestCase):
         self.assertEqual((status, len(entries), self.count()), (200, 2, 0))
         ids = json.loads(self.call("/api/confirm", {"entries": entries[:1]})[1])["ids"]
         self.assertEqual(self.count(), 1)
+        self.assertEqual(json.loads(self.call("/api/balances")[1]), {"balances": [{"customer": "Ramesh", "balance": 250}]})
         self.call("/api/undo", {"ids": ids})
         self.assertEqual(self.count(), 0)
+        self.assertEqual(json.loads(self.call("/api/balances")[1]), {"balances": []})
 
     def test_ai_failure_returns_a_plain_message(self):
         with mock.patch.object(server, "api_key", lambda: "k"), \

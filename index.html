@@ -27,6 +27,8 @@
   .row button { flex: 1; min-height: 56px; font-size: 18px; }
   .yes { background: var(--go); } .no { background: var(--stop); }
   .saved { border-color: var(--go); }
+  .due { display: flex; justify-content: space-between; gap: 12px; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; overflow-wrap: anywhere; }
+  .due b { white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -37,6 +39,8 @@
   <button id="go">लिखो</button>
   <p id="status" role="status"></p>
   <section id="cards"></section>
+  <h2>कौन कितना बाकी</h2>
+  <section id="dues"></section>
 </main>
 <script>
 const HINDI = { udhar: "उधार", payment: "जमा", sale: "बिक्री" };
@@ -57,6 +61,17 @@ async function post(path, body) {
   }
 }
 
+async function showDues() {
+  let dues = [];
+  try { dues = (await (await fetch("/api/balances")).json()).balances || []; } catch { return; }
+  const rows = dues.map(d => {
+    const row = el("div", "due");
+    row.append(el("span", "", d.customer), el("b", "", `₹${d.balance}`));
+    return row;
+  });
+  $("dues").replaceChildren(...(rows.length ? rows : [el("p", "sub", "Kisi ka kuch baaki nahi.")]));
+}
+
 function card(entry) {
   const box = el("div", "card");
   const ask = () => {
@@ -64,14 +79,14 @@ function card(entry) {
     yes.onclick = async () => {
       yes.disabled = no.disabled = true;
       const reply = await post("/api/confirm", { entries: [entry] });
-      if (reply.ids) saved(reply.ids); else { $("status").textContent = reply.message || "Save nahi hua. Dobara try karo."; ask(); }
+      if (reply.ids) { saved(reply.ids); showDues(); } else { $("status").textContent = reply.message || "Save nahi hua. Dobara try karo."; ask(); }
     };
     no.onclick = () => box.remove();
     draw("", `${entry.customer} ₹${entry.amount} ${HINDI[entry.type]} — सही है?`, [yes, no]);
   };
   const saved = ids => {
     const back = el("button", "", "↩ वापस लो");
-    back.onclick = async () => { back.disabled = true; await post("/api/undo", { ids }); ask(); };
+    back.onclick = async () => { back.disabled = true; await post("/api/undo", { ids }); ask(); showDues(); };
     draw("saved", `✓ लिखा गया: ${entry.customer} ₹${entry.amount} ${HINDI[entry.type]}`, [back]);
   };
   const draw = (state, title, buttons) => {
@@ -96,6 +111,7 @@ $("go").onclick = async () => {
   $("cards").prepend(...reply.entries.map(card));
   $("note").value = "";
 };
+showDues();
 </script>
 </body>
 </html>
