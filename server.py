@@ -4,12 +4,15 @@
 python3 server.py        serve the page on http://localhost:8000
 python3 server.py demo   parse the sample notes with the real model and print the entries
 """
+import functools
 import json
 import re
 import sqlite3
+import struct
 import sys
 import urllib.error
 import urllib.request
+import zlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -22,6 +25,7 @@ HONORIFICS = {"shri", "shree", "sri", "mr", "mrs", "smt", "ji", "jee", "g", "bha
 MESSAGES = {
     "offline": "Internet nahi chal raha. Net check karke dobara try karo.",
     "key": "AI ki key galat hai. .env mein GROQ_API_KEY check karo.",
+    "wait": "AI abhi busy hai. Thodi der mein dobara try karo.",
     "cap": "Aaj ki AI limit poori ho gayi. Thodi der baad try karo.",
     "confused": "AI samajh nahi paya. Note thoda saaf bolkar dobara try karo.",
 }
@@ -102,7 +106,11 @@ def ask(note):
             return json.load(reply)["choices"][0]["message"]["content"]
     except urllib.error.HTTPError as error:
         if error.code == 429:
-            raise AIError("cap", error.headers.get("retry-after"))
+            try:
+                seconds = max(1, round(float(error.headers.get("retry-after") or 8)))
+            except ValueError:
+                seconds = 8
+            raise AIError("wait", seconds) if seconds <= 60 else AIError("cap")
         raise AIError("key" if error.code in (401, 403) else "confused")
     except (urllib.error.URLError, TimeoutError):
         raise AIError("offline")
@@ -149,6 +157,53 @@ def balances(db):
     return [{"customer": customer, "balance": due} for customer, due in rows]
 
 
+def state(db):
+    """Everything the page shows: balances, today's three totals, today's and older entries."""
+    today = "date(created_at) = date('now', 'localtime')"
+    totals = dict.fromkeys(TYPES, 0)
+    totals.update(db.execute(f"SELECT type, SUM(amount) FROM entries WHERE {today} GROUP BY type"))
+    rows = db.execute(f"SELECT id, customer, amount, type, created_at, {today} FROM entries ORDER BY id DESC LIMIT 300").fetchall()
+    entry = lambda row: dict(zip(("id", "customer", "amount", "type", "at"), row))
+    return {"balances": balances(db), "today": totals, "empty": not rows,
+            "entries": [entry(r) for r in rows if r[5]], "older": [entry(r) for r in rows if not r[5]]}
+
+
+def load_sample(db):
+    """Fill an empty ledger with the recorded sample day. Does nothing if entries exist."""
+    if db.execute("SELECT 1 FROM entries LIMIT 1").fetchone():
+        return False
+    replies = json.loads(SAMPLES_PATH.read_text())
+    save(db, [entry for note in SAMPLE_NOTES for entry in read_reply(replies[note])])
+    return True
+
+
+# --- home screen -----------------------------------------------------------
+
+MANIFEST = {
+    "name": "Kirana — बोलो, लिखा गया", "short_name": "Kirana", "start_url": "/", "display": "standalone",
+    "background_color": "#f6f4ee", "theme_color": "#17794c",
+    "icons": [{"src": f"/icon-{size}.png", "sizes": f"{size}x{size}", "type": "image/png", "purpose": "any maskable"}
+              for size in (192, 512)],
+}
+
+
+@functools.lru_cache()
+def icon(size):
+    """A green tile with a white ledger page, drawn without an image library."""
+    green, white = b"\x17\x79\x4c", b"\xff\xff\xff"
+
+    def pixel(x, y):
+        if not (0.28 < x < 0.72 and 0.22 < y < 0.78):
+            return green
+        line = any(abs(y - middle) < 0.03 for middle in (0.36, 0.5, 0.64))
+        return green if line and 0.36 < x < (0.64 if y < 0.57 else 0.52) else white
+
+    rows = b"".join(b"\0" + b"".join(pixel((x + 0.5) / size, (y + 0.5) / size) for x in range(size)) for y in range(size))
+    chunk = lambda kind, data: struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data))
+    return (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", size, size, 8, 2, 0, 0, 0))
+            + chunk(b"IDAT", zlib.compress(rows, 9)) + chunk(b"IEND", b""))
+
+
 # --- http ------------------------------------------------------------------
 
 class Handler(BaseHTTPRequestHandler):
@@ -165,10 +220,14 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/":
             return self.send(200, (ROOT / "index.html").read_bytes(), "text/html")
-        if self.path == "/api/balances":
+        if self.path == "/manifest.json":
+            return self.send(200, MANIFEST, "application/manifest+json")
+        if self.path in ("/icon-192.png", "/icon-512.png"):
+            return self.send(200, icon(int(self.path[6:9])), "image/png")
+        if self.path == "/api/state":
             db = connect(self.db_path)
             try:
-                return self.send(200, {"balances": balances(db)})
+                return self.send(200, state(db))
             finally:
                 db.close()
         self.send(404, {"error": "not found"})
@@ -188,6 +247,8 @@ class Handler(BaseHTTPRequestHandler):
             elif self.path == "/api/undo":
                 undo(db, data.get("ids", []))
                 self.send(200, {"ok": True})
+            elif self.path == "/api/sample":
+                self.send(200, {"ok": load_sample(db)})
             else:
                 self.send(404, {"error": "not found"})
         except AIError as error:

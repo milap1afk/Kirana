@@ -33,10 +33,13 @@ writes the WhatsApp reminders.
 
 1. Parser and confirm cards — built
 2. Balances (कौन कितना बाकी) — built
-3. WhatsApp: copy-reminder button and `wa.me` button
-4. Today's view (आज का हिसाब): three tiles and today's entries
+3. WhatsApp: copy-reminder button and `wa.me` button — built
+4. Today's view (आज का हिसाब): three tiles, today's entries, older under a toggle — built
 5. Phone polish (360 px, 44 px buttons, home-screen manifest), hardening
-   (429 retry countdown, sample-day button) and README
+   (429 retry countdown, sample-day button) and README — built
+
+`samples.json` holds real Groq replies recorded by `python3 server.py demo`; it is both the
+test fixture and the sample day. Re-record it whenever the prompt changes.
 
 Git: remote is `github.com/milap1afk/Kirana`. Commit after every step, push at the end.
 After cloning: `git config core.hooksPath .githooks`.

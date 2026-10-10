@@ -3,115 +3,198 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#17794c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Kirana">
 <title>Kirana — बोलो, लिखा गया</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans:wght@400;600;700&display=swap">
 <style>
-  :root { --bg: #f6f4ee; --card: #fff; --ink: #1c1b18; --muted: #6b6960; --line: #dedbd0; --go: #17794c; --stop: #b3261e; }
+  :root { --bg: #f6f4ee; --card: #fff; --ink: #1c1b18; --muted: #6b6960; --line: #dedbd0; --go: #17794c; --stop: #b3261e; --sale: #2a5fa8; }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 "Noto Sans", "Noto Sans Devanagari", sans-serif; }
-  main { max-width: 480px; margin: 0 auto; padding: 16px; }
-  h1 { margin: 0; font-size: 26px; }
-  h2 { margin: 28px 0 8px; font-size: 18px; }
-  .tag, .sub, #status { color: var(--muted); }
-  .tag { margin: 0 0 16px; }
-  textarea { width: 100%; min-height: 110px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; font: inherit; }
-  button { min-height: 44px; padding: 8px 16px; border: 0; border-radius: 12px; font: inherit; font-weight: 600; color: #fff; background: var(--ink); }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 "Noto Sans", "Noto Sans Devanagari", sans-serif; overflow-x: hidden; }
+  header { background: var(--go); color: #fff; padding: 20px 16px 18px; }
+  header div, main { max-width: 480px; margin: 0 auto; }
+  main { padding: 16px; }
+  h1 { margin: 0; font-size: 28px; line-height: 1.2; }
+  header p { margin: 2px 0 0; font-size: 17px; opacity: .9; }
+  h2 { margin: 28px 0 10px; font-size: 18px; }
+  .sub, #status { color: var(--muted); }
+  textarea { display: block; width: 100%; min-height: 110px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; font: inherit; background: var(--card); color: var(--ink); resize: none; }
+  button, .wa { min-height: 44px; padding: 8px 14px; border: 0; border-radius: 12px; font: inherit; font-weight: 600; color: #fff; background: var(--ink); cursor: pointer; }
   button:disabled { opacity: .5; }
-  #go { width: 100%; margin-top: 8px; min-height: 52px; font-size: 18px; }
+  .wide { width: 100%; margin-top: 8px; min-height: 52px; font-size: 18px; }
+  #go { background: var(--go); }
+  #sample { background: var(--card); color: var(--ink); border: 1px dashed var(--muted); }
   #status { min-height: 24px; margin: 8px 0; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 12px; overflow-wrap: anywhere; }
+  .card, .due, .tile, .entry { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow-wrap: anywhere; }
+  .card, .due { padding: 14px; margin-bottom: 10px; }
   .card b { font-size: 20px; }
   .sub { margin: 2px 0 12px; font-size: 14px; }
   .row { display: flex; gap: 8px; }
-  .row button { flex: 1; min-height: 56px; font-size: 18px; }
+  .row > * { flex: 1; }
+  .card .row button { min-height: 56px; font-size: 18px; }
   .yes { background: var(--go); } .no { background: var(--stop); }
   .saved { border-color: var(--go); }
-  .due { display: flex; justify-content: space-between; gap: 12px; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; overflow-wrap: anywhere; }
-  .due b { white-space: nowrap; }
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .tile { padding: 10px 8px; border-top: 4px solid var(--stop); min-width: 0; }
+  .tile.payment { border-top-color: var(--go); } .tile.sale { border-top-color: var(--sale); }
+  .tile span { display: block; font-size: 14px; color: var(--muted); }
+  .tile b { font-size: 19px; }
+  .line { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .line b { white-space: nowrap; }
+  .due .line { margin-bottom: 10px; font-size: 18px; }
+  .due button { background: var(--card); color: var(--ink); border: 1px solid var(--ink); }
+  .wa { display: flex; align-items: center; justify-content: center; background: #128c4a; text-decoration: none; }
+  .entry { padding: 10px 14px; margin-bottom: 6px; border-radius: 10px; }
+  .entry small { display: block; color: var(--muted); }
+  summary { min-height: 44px; display: flex; align-items: center; font-weight: 600; cursor: pointer; }
+  [hidden] { display: none; }
 </style>
 </head>
 <body>
-<main>
+<header><div>
   <h1>Kirana</h1>
-  <p class="tag">बोलो, लिखा गया.</p>
-  <textarea id="note" placeholder="Yahan bolo: Ramesh bhai ko dhai sau ka udhar…"></textarea>
-  <button id="go">लिखो</button>
+  <p>बोलो, लिखा गया.</p>
+</div></header>
+<main>
+  <textarea id="note" aria-label="Note" placeholder="Yahan bolo: Ramesh bhai ko dhai sau ka udhar…"></textarea>
+  <button id="go" class="wide">लिखो</button>
+  <button id="sample" class="wide" hidden>Sample day लोड करो</button>
   <p id="status" role="status"></p>
   <section id="cards"></section>
+
+  <h2>आज का हिसाब</h2>
+  <section id="tiles" class="tiles"></section>
+
   <h2>कौन कितना बाकी</h2>
   <section id="dues"></section>
+
+  <h2>आज की entries</h2>
+  <section id="today"></section>
+  <details id="olderBox" hidden>
+    <summary>सब entries</summary>
+    <section id="older"></section>
+  </details>
 </main>
 <script>
 const HINDI = { udhar: "उधार", payment: "जमा", sale: "बिक्री" };
 const PLAIN = {
-  udhar: e => `${e.customer} ne ₹${e.amount} ka udhaar liya`,
-  payment: e => `${e.customer} ne ₹${e.amount} jama kiye`,
-  sale: e => `${e.customer} ko ₹${e.amount} ki bikri`,
+  udhar: e => `${e.customer} ne ${rs(e.amount)} ka udhaar liya`,
+  payment: e => `${e.customer} ne ${rs(e.amount)} jama kiye`,
+  sale: e => `${e.customer} ko ${rs(e.amount)} ki bikri`,
 };
 const $ = id => document.getElementById(id);
 const el = (tag, cls, text) => Object.assign(document.createElement(tag), { className: cls || "", textContent: text || "" });
+const rs = amount => "₹" + Number(amount).toLocaleString("en-IN");
+const sleep = ms => new Promise(done => setTimeout(done, ms));
+const say = text => { $("status").textContent = text; };
 
 async function post(path, body) {
   try {
-    const reply = await fetch(path, { method: "POST", body: JSON.stringify(body) });
-    return await reply.json();
+    return await (await fetch(path, { method: "POST", body: JSON.stringify(body || {}) })).json();
   } catch {
     return { error: "offline", message: "Internet nahi chal raha. Net check karke dobara try karo." };
   }
 }
 
-async function showDues() {
-  let dues = [];
-  try { dues = (await (await fetch("/api/balances")).json()).balances || []; } catch { return; }
-  const rows = dues.map(d => {
-    const row = el("div", "due");
-    row.append(el("span", "", d.customer), el("b", "", `₹${d.balance}`));
-    return row;
-  });
-  $("dues").replaceChildren(...(rows.length ? rows : [el("p", "sub", "Kisi ka kuch baaki nahi.")]));
+async function copy(text) {
+  try { await navigator.clipboard.writeText(text); } catch {
+    const box = Object.assign(el("textarea"), { value: text });
+    document.body.append(box); box.select(); document.execCommand("copy"); box.remove();
+  }
+}
+
+function due(d) {
+  const text = `${d.customer} जी, ${rs(d.balance)} बाकी हैं।`;
+  const box = el("div", "due"), top = el("div", "line"), row = el("div", "row");
+  const copyBtn = el("button", "", "Reminder कॉपी");
+  const wa = Object.assign(el("a", "wa", "WhatsApp"), { href: "https://wa.me/?text=" + encodeURIComponent(text), target: "_blank", rel: "noopener" });
+  copyBtn.onclick = async () => { await copy(text); copyBtn.textContent = "✓ कॉपी हुआ"; setTimeout(() => copyBtn.textContent = "Reminder कॉपी", 1500); };
+  top.append(el("span", "", d.customer), el("b", "", rs(d.balance)));
+  row.append(copyBtn, wa);
+  box.append(top, row);
+  return box;
+}
+
+function entryRow(e, withDate) {
+  const box = el("div", "entry"), top = el("div", "line");
+  top.append(el("span", "", `${e.customer} · ${HINDI[e.type]}`), el("b", "", rs(e.amount)));
+  box.append(top, el("small", "", withDate ? e.at.slice(0, 16) : e.at.slice(11, 16)));
+  return box;
+}
+
+const list = (id, rows, empty) => $(id).replaceChildren(...(rows.length ? rows : [el("p", "sub", empty)]));
+
+async function refresh() {
+  let s;
+  try { s = await (await fetch("/api/state")).json(); } catch { return; }
+  $("tiles").replaceChildren(...Object.keys(HINDI).map(type => {
+    const tile = el("div", `tile ${type}`);
+    tile.append(el("span", "", HINDI[type]), el("b", "", rs(s.today[type])));
+    return tile;
+  }));
+  list("dues", s.balances.map(due), "Kisi ka kuch baaki nahi.");
+  list("today", s.entries.map(e => entryRow(e)), "Aaj abhi koi entry nahi.");
+  $("older").replaceChildren(...s.older.map(e => entryRow(e, true)));
+  $("olderBox").hidden = !s.older.length;
+  $("sample").hidden = !s.empty;
 }
 
 function card(entry) {
   const box = el("div", "card");
-  const ask = () => {
-    const yes = el("button", "yes", "✓ सही है"), no = el("button", "no", "✕ रद्द");
-    yes.onclick = async () => {
-      yes.disabled = no.disabled = true;
-      const reply = await post("/api/confirm", { entries: [entry] });
-      if (reply.ids) { saved(reply.ids); showDues(); } else { $("status").textContent = reply.message || "Save nahi hua. Dobara try karo."; ask(); }
-    };
-    no.onclick = () => box.remove();
-    draw("", `${entry.customer} ₹${entry.amount} ${HINDI[entry.type]} — सही है?`, [yes, no]);
-  };
-  const saved = ids => {
-    const back = el("button", "", "↩ वापस लो");
-    back.onclick = async () => { back.disabled = true; await post("/api/undo", { ids }); ask(); showDues(); };
-    draw("saved", `✓ लिखा गया: ${entry.customer} ₹${entry.amount} ${HINDI[entry.type]}`, [back]);
-  };
+  const label = `${entry.customer} ${rs(entry.amount)} ${HINDI[entry.type]}`;
   const draw = (state, title, buttons) => {
     const row = el("div", "row");
     row.append(...buttons);
     box.className = `card ${state}`;
     box.replaceChildren(el("b", "", title), el("p", "sub", PLAIN[entry.type](entry)), row);
   };
+  const ask = () => {
+    const yes = el("button", "yes", "✓ सही है"), no = el("button", "no", "✕ रद्द");
+    yes.onclick = async () => {
+      yes.disabled = no.disabled = true;
+      const reply = await post("/api/confirm", { entries: [entry] });
+      if (reply.ids) { saved(reply.ids); refresh(); } else { say(reply.message || "Save nahi hua. Dobara try karo."); ask(); }
+    };
+    no.onclick = () => box.remove();
+    draw("", `${label} — सही है?`, [yes, no]);
+  };
+  const saved = ids => {
+    const back = el("button", "", "↩ वापस लो");
+    back.onclick = async () => { back.disabled = true; await post("/api/undo", { ids }); ask(); refresh(); };
+    draw("saved", `✓ लिखा गया: ${label}`, [back]);
+  };
   ask();
   return box;
 }
 
+async function parse(note, tries = 0) {
+  say("Likh raha hoon…");
+  const reply = await post("/api/parse", { note });
+  if (reply.error !== "wait" || tries >= 3) return reply;
+  for (let left = reply.retry_after; left > 0; left--) { say(`${left} second रुको…`); await sleep(1000); }
+  return parse(note, tries + 1);
+}
+
 $("go").onclick = async () => {
   const note = $("note").value.trim();
-  if (!note) return;
+  if (!note) return say("Pehle note bolo ya likho.");
   $("go").disabled = true;
-  $("status").textContent = "Likh raha hoon…";
-  const reply = await post("/api/parse", { note });
+  const reply = await parse(note);
   $("go").disabled = false;
-  $("status").textContent = reply.entries ? "" : reply.message || "Kuch gadbad hui. Dobara try karo.";
+  say(reply.entries ? "" : reply.message || "Kuch gadbad hui. Dobara try karo.");
   if (!reply.entries) return;
   $("cards").prepend(...reply.entries.map(card));
   $("note").value = "";
 };
-showDues();
+
+$("sample").onclick = async () => { await post("/api/sample"); refresh(); };
+refresh();
 </script>
 </body>
 </html>
