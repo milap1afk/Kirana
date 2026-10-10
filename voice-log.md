@@ -59,6 +59,11 @@ words 250 · spoken 130s · typed 375s
 > 9. How this was built with the honest line that mouse and enter were used only for approvals, prompt, commit, and test counts. The Wispr Flow account was made through the Hacker House Goa referral link. The link to the voice log: confirm no keys in the repo. Run all tests, commit after each step, push, and that's the prompt to go ahead and build.
 
 ## 3 · 2026-10-10 15:26 +0530
-words 189 · spoken ~76s · typed 284s
+words 189 · spoken 84s · typed 284s
 
 > Prompt took 130 seconds. Final pass first exercise. What you haven't in the headless Chrome at phone width. Click phase on a real note. Confirm undo copy reminder and the WhatsApp button. And four fake a four twenty nine to see the countdown. Fix anything that breaks. Second review the whole repo like a judge who has five minutes. Readme page final button. Make sure no internet wrong key daily cap. and AI confused each show one plain English line and never a trace book. Third, add a read me section called notes for the Wispr team with five real functions points from dictating into Claude code taken from missers in the voice-log. Like English and Hinglish, judge me, just pass for just pass and the number words plus one or two things that would have helped. Like a dictionary of repo words: 40 in how this was built. Like the referral as https://ref.wisprflow.ai/hhg, and say the Wispr Flow history matches the voice-log prompt for prompt. Update all counts. Confirm no key anywhere in history. Run all tests. Commit push, and that's prompt 3. Go ahead and build it.
+
+## 4 · 2026-10-10 15:40 +0530
+words 41 · spoken ~16s · typed 62s
+
+> prompt 3 took 84 seconds. Fill 10 in the Wispr notes. A judge face was a judge pass, and judge me. Judge pass was judge pass 2. Fix those two, update the count, commit, push, and that's prompt 4. Go ahead.

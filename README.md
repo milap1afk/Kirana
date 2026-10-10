@@ -6,7 +6,8 @@
 | 0 | 2026-10-10 14:21 +0530 | 179 | 1:50 | 4:28 | 2:38 |
 | 1 | 2026-10-10 14:44 +0530 | 401 | 3:39 | 10:02 | 6:23 |
 | 2 | 2026-10-10 15:00 +0530 | 250 | 2:10 | 6:15 | 4:05 |
-| 3 | 2026-10-10 15:26 +0530 | 189 | ~1:16 | 4:44 | 3:28 |
+| 3 | 2026-10-10 15:26 +0530 | 189 | 1:24 | 4:44 | 3:20 |
+| 4 | 2026-10-10 15:40 +0530 | 41 | ~0:16 | 1:02 | 0:46 |
 <!-- stats:end -->
 
 # Kirana — बोलो, लिखा गया.
@@ -47,7 +48,7 @@ It needs only Python 3.9 or newer; there is nothing to install.
 
 Kirana was built by voice. The mouse and the Enter key were used only for approvals.
 
-- 4 voice prompts, 12 commits, 27 tests.
+- 5 voice prompts, 13 commits, 27 tests.
 - Every prompt is in [voice-log.md](voice-log.md), word for word, with its word count and timings. The chart at the top compares the minutes spoken with the minutes it would have taken to type at 40 words a minute.
 - The prompts were dictated with Wispr Flow. The Wispr Flow account was made through the [Hacker House Goa referral link](https://ref.wisprflow.ai/hhg), and the Wispr Flow history matches the voice log prompt for prompt.
 - The page was exercised in headless Chrome at 360 px: a real note parsed, confirm, cancel, undo, the copy-reminder and WhatsApp buttons, a faked 429 countdown, and each failure message.
@@ -63,7 +64,7 @@ from [voice-log.md](voice-log.md); the right-hand side is what was meant.
 2. **Hindi number words were turned into digits, and wrongly.** Paanch sau, dhai sau, dedh hazaar and sawa hazaar came out as "500 is 5 hundred. 250 is 2 hundred. 1,500 is 1,000. 1,200 is 1,25", and later as "2,00,000 or 5,00,000". These examples were the spec itself.
 3. **Repo and developer words were replaced by everyday ones.** Groq → "Grok", parser → "phase", fixtures → "features", tiles → "titles", README → "Redmi", traceback → "trace book", gitignored → "get ignored".
 4. **Spoken lists, numbers and addresses lost their shape.** Rules 5 and 6 became "5 keys, 11: get ignored. .env 6: don't stop to ask". 429 became "4429", "45429" and "four fake a four twenty nine". "Fourth, in" became "40 in". `wa.me` became "opens.me" and `voice-log.md` became "voice: log.md".
-5. **Hindi words inside an English sentence broke.** "Ramesh bhai, Ramesh ji and Shri Ramesh ji" became "Ramesh by Ramesh by and Shri Ramesh G", and "honorifics" became "NRIфик", switching to Cyrillic mid-word. Two phrases could not be recovered at all: "and a judge face" and "judge me, just pass for just pass".
+5. **Hindi words inside an English sentence broke, and so did one plain phrase.** "Ramesh bhai, Ramesh ji and Shri Ramesh ji" became "Ramesh by Ramesh by and Shri Ramesh G", and "honorifics" became "NRIфик", switching to Cyrillic mid-word. "A judge pass" became "a judge face", and when that mishear was quoted back as an example ("judge face" for "judge pass") it became "judge me, just pass for just pass".
 
 Two things that would have helped:
 
