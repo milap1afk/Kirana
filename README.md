@@ -32,7 +32,7 @@ git clone https://github.com/milap1afk/Kirana && cd Kirana
 python3 server.py                         # open http://localhost:8000
 ```
 
-Press **Sample day लोड करो** to fill the empty ledger with five recorded notes;
+On a phone, open `http://<your-laptop-ip>:8000` on the same Wi-Fi. Press **Sample day लोड करो** to fill the empty ledger with five recorded notes;
 that needs no key. To parse your own notes, get a free key from
 [console.groq.com](https://console.groq.com) and put it in `.env`:
 
@@ -47,11 +47,28 @@ It needs only Python 3.9 or newer; there is nothing to install.
 
 Kirana was built by voice. The mouse and the Enter key were used only for approvals.
 
-- 3 voice prompts, 10 commits, 25 tests.
+- 4 voice prompts, 12 commits, 27 tests.
 - Every prompt is in [voice-log.md](voice-log.md), word for word, with its word count and timings. The chart at the top compares the minutes spoken with the minutes it would have taken to type at 40 words a minute.
-- The prompts were dictated with Wispr Flow. The Wispr Flow account was made through the Hacker House Goa referral link.
+- The prompts were dictated with Wispr Flow. The Wispr Flow account was made through the [Hacker House Goa referral link](https://ref.wisprflow.ai/hhg), and the Wispr Flow history matches the voice log prompt for prompt.
+- The page was exercised in headless Chrome at 360 px: a real note parsed, confirm, cancel, undo, the copy-reminder and WhatsApp buttons, a faked 429 countdown, and each failure message.
 - The model is `openai/gpt-oss-120b` on Groq, at temperature 0 with JSON output. The tests run on real replies recorded in [samples.json](samples.json), so they need no key.
 - There are no keys in this repo: `.env` is gitignored, and the voice log redacts anything shaped like a key.
+
+## Notes for the Wispr team
+
+Five friction points from dictating this project into Claude Code. Every quote is
+from [voice-log.md](voice-log.md); the right-hand side is what was meant.
+
+1. **"Hinglish" always came out as "English".** "The shopkeeper says the days in English", "5 messy English notes", "a plain English line". The app's language had to be guessed from context.
+2. **Hindi number words were turned into digits, and wrongly.** Paanch sau, dhai sau, dedh hazaar and sawa hazaar came out as "500 is 5 hundred. 250 is 2 hundred. 1,500 is 1,000. 1,200 is 1,25", and later as "2,00,000 or 5,00,000". These examples were the spec itself.
+3. **Repo and developer words were replaced by everyday ones.** Groq → "Grok", parser → "phase", fixtures → "features", tiles → "titles", README → "Redmi", traceback → "trace book", gitignored → "get ignored".
+4. **Spoken lists, numbers and addresses lost their shape.** Rules 5 and 6 became "5 keys, 11: get ignored. .env 6: don't stop to ask". 429 became "4429", "45429" and "four fake a four twenty nine". "Fourth, in" became "40 in". `wa.me` became "opens.me" and `voice-log.md` became "voice: log.md".
+5. **Hindi words inside an English sentence broke.** "Ramesh bhai, Ramesh ji and Shri Ramesh ji" became "Ramesh by Ramesh by and Shri Ramesh G", and "honorifics" became "NRIфик", switching to Cyrillic mid-word. Two phrases could not be recovered at all: "and a judge face" and "judge me, just pass for just pass".
+
+Two things that would have helped:
+
+- **A dictionary of repo words**, built from the open project: file names, identifiers and README terms such as Groq, parser, fixtures, tiles, `voice-log.md` and `wa.me`.
+- **A Hinglish mode** that keeps Hindi words and number words as spoken ("dhai sau" stays "dhai sau") instead of translating them into digits or the nearest English word.
 
 ## Layout
 
